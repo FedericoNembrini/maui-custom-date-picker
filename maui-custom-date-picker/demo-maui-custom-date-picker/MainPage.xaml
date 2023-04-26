@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:cdp="clr-namespace:FedericoNembrini.Maui.CustomDatePicker;assembly=MauiCustomDatePicker"
+             xmlns:viewmodels="clr-namespace:DemoMauiCustomDatePicker.ViewModels"
+             x:Class="DemoMauiCustomDatePicker.MainPage">
+    <ContentPage.BindingContext>
+        <viewmodels:MainPageViewModel />
+    </ContentPage.BindingContext>
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+            <cdp:NullableDatePicker NullableDate="{Binding TestDate}"
+                                    MinimumDate="{Binding TestMinDate}"
+                                    MaximumDate="{Binding TestMaxDate}" />
+            <Label Text="{Binding TestMinDate}" />
+            <Label Text="{Binding TestMaxDate}" />
+            <Button Text="Set Current Date From ViewModel"
+                    Command="{Binding SetCurrentDateCommand}" />
+            <Button Text="Clear Date From ViewModel"
+                    Command="{Binding ClearTestDateCommand}" />
+            <Button Text="Set Min Date From ViewModel"
+                    Command="{Binding SetMinDateCommand}" />
+            <Button Text="Set Max Date From ViewModel"
+                    Command="{Binding SetMaxDateCommand}" />
+            <Button Text="Clear Min Max Date From ViewModel"
+                    Command="{Binding ClearMinMaxDateCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
