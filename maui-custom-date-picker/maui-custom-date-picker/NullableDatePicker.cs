@@ -126,7 +126,7 @@
 			defaultValueCreator: (bindable) => DateTime.Today
 		);
 
-		static object CoerceNullableDate(BindableObject bindable, object value)
+		static object? CoerceNullableDate(BindableObject bindable, object value)
 		{
 			DateTime? newNullableDate = ((DateTime?)value)?.Date;
 			if (newNullableDate == null)

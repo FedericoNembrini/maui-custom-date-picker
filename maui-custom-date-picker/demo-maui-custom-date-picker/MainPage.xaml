@@ -9,13 +9,18 @@
     </ContentPage.BindingContext>
     <ScrollView>
         <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
+            Spacing="15"
+            Padding="30, 0"
             VerticalOptions="Center">
+            <Label Text="Nullable Date Picker" />
             <cdp:NullableDatePicker NullableDate="{Binding TestDate}"
                                     MinimumDate="{Binding TestMinDate}"
                                     MaximumDate="{Binding TestMaxDate}" />
+            <Label Text="Nullable Date Value" />
+            <Label Text="{Binding TestDate}" />
+            <Label Text="Minimum Date Value" />
             <Label Text="{Binding TestMinDate}" />
+            <Label Text="Maximum Date Value" />
             <Label Text="{Binding TestMaxDate}" />
             <Button Text="Set Current Date From ViewModel"
                     Command="{Binding SetCurrentDateCommand}" />

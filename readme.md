@@ -2,11 +2,10 @@
 Maui Custom Date Picker is a MAUI library that implements and extends the default Date Picker.
 
 ### Current Features
-- [x] Nullable Date Picker (Android Only)
+- [x] Nullable Date Picker (Android and iOS)
 
 ### ToDo
-- [ ] Nullable Date Picker (iOS)
-- [ ] Nullable Time Picker (Android and iOS )
+- [ ] Nullable Time Picker (Android and iOS)
 - [ ] Editable DateTime Picker (Android and iOS)
 - [ ] Improve Documentation
 - [ ] Tests
@@ -22,7 +21,7 @@ using FedericoNembrini.Maui.CustomDatePicker;;
 ```
 ```csharp
 builder
-	.UseMauiApp<App>()
+    .UseMauiApp<App>()
     .UseCustomDatePicker();
 ```
 Then in your .xaml use it like as a control

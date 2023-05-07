@@ -4,151 +4,146 @@ using Microsoft.Maui.Platform;
 
 namespace FedericoNembrini.Maui.CustomDatePicker.Handlers
 {
-	public partial class NullableDatePickerHandler
-	{
-		DatePickerDialog? _datePickerDialog;
+    public partial class NullableDatePickerHandler
+    {
+        DatePickerDialog? _datePickerDialog;
 
-		protected override MauiDatePicker CreatePlatformView()
-		{
-			MauiDatePicker mauiDatePicker = base.CreatePlatformView();
+        protected override MauiDatePicker CreatePlatformView()
+        {
+            MauiDatePicker mauiDatePicker = base.CreatePlatformView();
 
-			mauiDatePicker.ShowPicker = ShowPickerDialog;
+            mauiDatePicker.ShowPicker = ShowPickerDialog;
+            
+            return mauiDatePicker;
+        }
 
-			mauiDatePicker.TextChanged += (sender, test) =>
-			{
+        protected override void ConnectHandler(MauiDatePicker platformView)
+        {
+            base.ConnectHandler(platformView);
 
-			};
+            UpdateDisplayDate();
+        }
 
-			return mauiDatePicker;
-		}
+        protected override DatePickerDialog CreateDatePickerDialog(int year, int month, int day)
+        {
+            _datePickerDialog = base.CreateDatePickerDialog(year, month, day);
 
-		protected override void ConnectHandler(MauiDatePicker platformView)
-		{
-			base.ConnectHandler(platformView);
+            _datePickerDialog.SetButton("Ok", (sender, e) =>
+            {
+                this.PlatformView.Text = _datePickerDialog.DatePicker.DateTime.ToString(this.VirtualView.Format);
 
-			UpdateDisplayDate();
-		}
+                this.VirtualView.Date = _datePickerDialog.DatePicker.DateTime;
+                (this.VirtualView as INullableDatePicker)!.NullableDate = _datePickerDialog.DatePicker.DateTime;
 
-		protected override DatePickerDialog CreateDatePickerDialog(int year, int month, int day)
-		{
-			_datePickerDialog = base.CreateDatePickerDialog(year, month, day);
+                this.PlatformView.ClearFocus();
+            });
 
-			_datePickerDialog.SetButton("Ok", (sender, e) =>
-			{
-				this.PlatformView.Text = _datePickerDialog.DatePicker.DateTime.ToString(this.VirtualView.Format);
+            if (!(this.VirtualView as INullableDatePicker)!.IsClearButtonVisible)
+            {
+                _datePickerDialog.SetButton2("Cancel", (sender, e) =>
+                {
+                    this.PlatformView.ClearFocus();
+                });
+            }
 
-				this.VirtualView.Date = _datePickerDialog.DatePicker.DateTime;
-				(this.VirtualView as INullableDatePicker)!.NullableDate = _datePickerDialog.DatePicker.DateTime;
+            if ((this.VirtualView as INullableDatePicker)!.IsClearButtonVisible)
+            {
+                _datePickerDialog.SetButton2("Clear", (sender, e) =>
+                {
+                    (this.VirtualView as INullableDatePicker)!.NullableDate = null;
+                    this.PlatformView.ClearFocus();
+                });
 
-				this.PlatformView.ClearFocus();
-			});
+                _datePickerDialog.SetButton3("Cancel", (sender, e) =>
+                {
+                    this.PlatformView.ClearFocus();
+                });
+            }
 
-			if (!(this.VirtualView as INullableDatePicker)!.IsClearButtonVisible)
-			{
-				_datePickerDialog.SetButton2("Cancel", (sender, e) =>
-				{
-					this.PlatformView.ClearFocus();
-				});
-			}
+            return _datePickerDialog;
+        }
 
-			if ((this.VirtualView as INullableDatePicker)!.IsClearButtonVisible)
-			{
-				_datePickerDialog.SetButton2("Clear", (sender, e) =>
-				{
-					(this.VirtualView as INullableDatePicker)!.NullableDate = null;
-					this.PlatformView.ClearFocus();
-				});
+        protected override void DisconnectHandler(MauiDatePicker platformView)
+        {
+            platformView.Dispose();
+            base.DisconnectHandler(platformView);
+        }
 
-				_datePickerDialog.SetButton3("Cancel", (sender, e) =>
-				{
-					this.PlatformView.ClearFocus();
-				});
-			}
+        public void UpdateDisplayDate()
+        {
+            this.PlatformView.Text = (this.VirtualView as INullableDatePicker)?.NullableDate?.ToString(this.VirtualView.Format);
+        }
 
-			return _datePickerDialog;
-		}
+        void ShowPickerDialog()
+        {
+            if (VirtualView == null)
+                return;
 
-		protected override void DisconnectHandler(MauiDatePicker platformView)
-		{
-			platformView.Dispose();
-			base.DisconnectHandler(platformView);
-		}
+            if (_datePickerDialog != null && _datePickerDialog.IsShowing)
+                return;
 
-		public void UpdateDisplayDate()
-		{
-			this.PlatformView.Text = (this.VirtualView as INullableDatePicker)?.NullableDate?.ToString(this.VirtualView.Format);
-		}
+            if (this.VirtualView is not INullableDatePicker)
+                return;
 
-		void ShowPickerDialog()
-		{
-			if (VirtualView == null)
-				return;
+            int year, month, day;
 
-			if (_datePickerDialog != null && _datePickerDialog.IsShowing)
-				return;
+            if ((this.VirtualView as INullableDatePicker)!.NullableDate.HasValue)
+            {
+                year = (this.VirtualView as INullableDatePicker)!.NullableDate!.Value.Year;
+                month = (this.VirtualView as INullableDatePicker)!.NullableDate!.Value.Month;
+                day = (this.VirtualView as INullableDatePicker)!.NullableDate!.Value.Day;
+            }
+            else
+            {
+                if (this.VirtualView.MinimumDate != new DateTime(1900, 1, 1).Date && this.VirtualView.MinimumDate != DateTime.MinValue)
+                {
+                    year = this.VirtualView.MinimumDate.Year;
+                    month = this.VirtualView.MinimumDate.Month;
+                    day = this.VirtualView.MinimumDate.Day;
+                }
+                else
+                {
+                    year = DateTime.Today.Year;
+                    month = DateTime.Today.Month;
+                    day = DateTime.Today.Day;
+                }
+            }
 
-			if (this.VirtualView is not INullableDatePicker)
-				return;
+            ShowPickerDialog(year, month - 1, day);
+        }
 
-			int year, month, day;
+        void ShowPickerDialog(int year, int month, int day)
+        {
+            if (_datePickerDialog == null)
+            {
+                _datePickerDialog = CreateDatePickerDialog(year, month, day);
+            }
+            else
+            {
+                EventHandler? setDateLater = null;
+                setDateLater = (sender, e) => { _datePickerDialog!.UpdateDate(year, month, day); _datePickerDialog.ShowEvent -= setDateLater; };
+                _datePickerDialog.ShowEvent += setDateLater;
+            }
 
-			if ((this.VirtualView as INullableDatePicker)!.NullableDate.HasValue)
-			{
-				year = (this.VirtualView as INullableDatePicker)!.NullableDate!.Value.Year;
-				month = (this.VirtualView as INullableDatePicker)!.NullableDate!.Value.Month;
-				day = (this.VirtualView as INullableDatePicker)!.NullableDate!.Value.Day;
-			}
-			else
-			{
-				if (this.VirtualView.MinimumDate != new DateTime(1900, 1, 1).Date && this.VirtualView.MinimumDate != DateTime.MinValue)
-				{
-					year = this.VirtualView.MinimumDate.Year;
-					month = this.VirtualView.MinimumDate.Month;
-					day = this.VirtualView.MinimumDate.Day;
-				}
-				else
-				{
-					year = DateTime.Today.Year;
-					month = DateTime.Today.Month;
-					day = DateTime.Today.Day;
-				}
-			}
+            _datePickerDialog.Show();
+        }
 
-			ShowPickerDialog(year, month - 1, day);
-		}
+        public static void MapNullableDate(IDatePickerHandler handler, IDatePicker datePicker)
+        {
+            handler.PlatformView.Text = (datePicker as INullableDatePicker)?.NullableDate?.ToString(datePicker.Format);
+        }
 
-		void ShowPickerDialog(int year, int month, int day)
-		{
-			if (_datePickerDialog == null)
-			{
-				_datePickerDialog = CreateDatePickerDialog(year, month, day);
-			}
-			else
-			{
-				EventHandler? setDateLater = null;
-				setDateLater = (sender, e) => { _datePickerDialog!.UpdateDate(year, month, day); _datePickerDialog.ShowEvent -= setDateLater; };
-				_datePickerDialog.ShowEvent += setDateLater;
-			}
+        public static new void MapDate(IDatePickerHandler handler, IDatePicker datePicker)
+        {
+            //handler.PlatformView?.UpdateDate(datePicker);
+        }
 
-			_datePickerDialog.Show();
-		}
+        public static new void MapFormat(IDatePickerHandler handler, IDatePicker datePicker)
+        {
+            handler.PlatformView?.UpdateFormat(datePicker);
 
-		public static void MapNullableDate(IDatePickerHandler handler, IDatePicker datePicker)
-		{
-			handler.PlatformView.Text = (datePicker as INullableDatePicker)?.NullableDate?.ToString(datePicker.Format);
-		}
-
-		public static new void MapDate(IDatePickerHandler handler, IDatePicker datePicker)
-		{
-			//handler.PlatformView?.UpdateDate(datePicker);
-		}
-
-		public static new void MapFormat(IDatePickerHandler handler, IDatePicker datePicker)
-		{
-			handler.PlatformView?.UpdateFormat(datePicker);
-
-			if (handler.PlatformView != null)
-				handler.PlatformView.Text = (datePicker as INullableDatePicker)?.NullableDate?.ToString(datePicker.Format);
-		}
-	}
+            if (handler.PlatformView != null)
+                handler.PlatformView.Text = (datePicker as INullableDatePicker)?.NullableDate?.ToString(datePicker.Format);
+        }
+    }
 }
