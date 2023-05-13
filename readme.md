@@ -1,17 +1,22 @@
 ## Maui Custom Date Picker
 Maui Custom Date Picker is a MAUI library that implements and extends the default Date Picker.
 
-### Current Features
-- [x] Nullable Date Picker (Android and iOS)
+<table>
+    
+</table>
+
+|   | Android | iOS | Mac | Windows |
+|---|:-:|:-:|:-:|:-:|
+| NullableDatePicker | ✅ | ✅ | - | - |
+| NullableTimePicker | 🛠️ | 🛠️ | - | - |
+| EditableDateTimePicker | - | - | - | - |
 
 ### ToDo
-- [ ] Nullable Time Picker (Android and iOS)
-- [ ] Editable DateTime Picker (Android and iOS)
 - [ ] Improve Documentation
 - [ ] Tests
 
 ### How To Use
-Install the NugetPackage into your shared projects (if available)
+Install the NugetPackage into your shared projects (available soon)
 ```
 Install-Package FedericoNembrini.Maui.CustomDatePicker
 ```
