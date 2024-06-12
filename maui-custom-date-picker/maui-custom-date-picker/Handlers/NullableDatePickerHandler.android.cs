@@ -13,7 +13,7 @@ namespace FedericoNembrini.Maui.CustomDatePicker.Handlers
             MauiDatePicker mauiDatePicker = base.CreatePlatformView();
 
             mauiDatePicker.ShowPicker = ShowPickerDialog;
-            
+
             return mauiDatePicker;
         }
 
@@ -130,11 +130,12 @@ namespace FedericoNembrini.Maui.CustomDatePicker.Handlers
 
         public static void MapNullableDate(IDatePickerHandler handler, IDatePicker datePicker)
         {
-            handler.PlatformView.Text = (datePicker as INullableDatePicker)?.NullableDate?.ToString(datePicker.Format);
+            (handler as INullableDatePickerHandler)?.UpdateDisplayDate();
         }
 
         public static new void MapDate(IDatePickerHandler handler, IDatePicker datePicker)
         {
+            // Not needed, MapNullableDate is called
             //handler.PlatformView?.UpdateDate(datePicker);
         }
 
@@ -142,8 +143,7 @@ namespace FedericoNembrini.Maui.CustomDatePicker.Handlers
         {
             handler.PlatformView?.UpdateFormat(datePicker);
 
-            if (handler.PlatformView != null)
-                handler.PlatformView.Text = (datePicker as INullableDatePicker)?.NullableDate?.ToString(datePicker.Format);
+            (handler as INullableDatePickerHandler)?.UpdateDisplayDate();
         }
     }
 }

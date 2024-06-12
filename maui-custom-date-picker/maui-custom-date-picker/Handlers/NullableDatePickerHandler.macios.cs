@@ -50,6 +50,7 @@ namespace FedericoNembrini.Maui.CustomDatePicker.Handlers
         protected override void DisconnectHandler(MauiDatePicker platformView)
         {
             platformView.Dispose();
+
             base.DisconnectHandler(platformView);
         }
 
@@ -77,20 +78,19 @@ namespace FedericoNembrini.Maui.CustomDatePicker.Handlers
 
         public static void MapNullableDate(IDatePickerHandler handler, IDatePicker datePicker)
         {
-            handler.PlatformView.Text = (datePicker as INullableDatePicker)?.NullableDate?.ToString(datePicker.Format);
+            (handler as INullableDatePickerHandler)?.UpdateDisplayDate();
         }
 
         public static new void MapDate(IDatePickerHandler handler, IDatePicker datePicker)
         {
-
+            // Not needed, MapNullableDate is going to be called
         }
 
         public static new void MapFormat(IDatePickerHandler handler, IDatePicker datePicker)
         {
             handler.PlatformView.UpdateFormat(datePicker);
 
-            if (handler.PlatformView != null)
-                handler.PlatformView.Text = (datePicker as INullableDatePicker)?.NullableDate?.ToString(datePicker.Format);
+            (handler as INullableDatePickerHandler)?.UpdateDisplayDate();
         }
 
         public static new void MapFlowDirection(DatePickerHandler handler, IDatePicker datePicker)
@@ -98,16 +98,14 @@ namespace FedericoNembrini.Maui.CustomDatePicker.Handlers
             handler.PlatformView?.UpdateFlowDirection(datePicker);
             handler.PlatformView?.UpdateTextAlignment(datePicker);
 
-            if (handler.PlatformView != null)
-                handler.PlatformView.Text = (datePicker as INullableDatePicker)?.NullableDate?.ToString(datePicker.Format);
+            (handler as INullableDatePickerHandler)?.UpdateDisplayDate();
         }
 
         public static new void MapTextColor(IDatePickerHandler handler, IDatePicker datePicker)
         {
             handler.PlatformView?.UpdateTextColor(datePicker);
 
-            if (handler.PlatformView != null)
-                handler.PlatformView.Text = (datePicker as INullableDatePicker)?.NullableDate?.ToString(datePicker.Format);
+            (handler as INullableDatePickerHandler)?.UpdateDisplayDate();
         }
     }
 }

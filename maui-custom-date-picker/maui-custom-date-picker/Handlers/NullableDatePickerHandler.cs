@@ -65,5 +65,9 @@ namespace FedericoNembrini.Maui.CustomDatePicker.Handlers
             base.UpdateValue(property);
         }
 #endif
+
+#if !ANDROID && !IOS
+        public void UpdateDisplayDate() { }
+#endif
     }
 }
